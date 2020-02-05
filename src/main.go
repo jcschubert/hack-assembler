@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 )
 
 // readLines takes a fileName, splits its lines along '\n' and
@@ -37,6 +38,9 @@ func readLines(fileName string) ([]string, error) {
 	return lines, nil
 }
 
+// readLines takes a fileName and lines, opens a file, and writes
+// the lines to it. The lines are separated by \n. If the file does
+// not exist, it is created.
 func writeLines(fileName string, lines []string) error {
 	f, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE, 0755)
 	defer f.Close()
@@ -47,8 +51,7 @@ func writeLines(fileName string, lines []string) error {
 
 	writer := bufio.NewWriter(f)
 	for _, l := range lines {
-		i, err := writer.WriteString(l + "\n")
-		fmt.Printf("%d bytes written", i)
+		_, err := writer.WriteString(strings.Trim(l, "\n") + "\n")
 		if err != nil {
 			return err
 		}
