@@ -5,25 +5,34 @@ import (
 	"testing"
 )
 
+type ParserTestCase struct {
+	desc  string
+	input []string
+	want  []Instruction
+}
+
 func TestParser(t *testing.T) {
-	t.Run("an empty program returns no instructions", func(t *testing.T) {
-		input := []string{""}
-		want := []Instruction{}
-		got := Parse(input)
+	cases := []ParserTestCase{
+		{
+			"An empty program returns no instructions.",
+			[]string{""},
+			[]Instruction{},
+		},
+		{
+			"A single @instruction with a value returns an @instruction with an address value.",
+			[]string{"@1234"},
+			[]Instruction{
+				{"@", 1234},
+			},
+		},
+	}
 
-		if !reflect.DeepEqual(want, got) {
-			t.Fatalf("Parse(%+v) should return %+v, but returned %+v", input, want, got)
-		}
-	})
-	t.Run("A single @instruction returns an @instruction", func(t *testing.T) {
-		input := []string{"@1234"}
-		want := []Instruction{
-			{"@", 1234},
-		}
-		got := Parse(input)
-
-		if !reflect.DeepEqual(want, got) {
-			t.Fatalf("Parse(%+v) should return %+v, but returned %+v", input, want, got)
-		}
-	})
+	for _, c := range cases {
+		t.Run(c.desc, func(t *testing.T) {
+			got := Parse(c.input)
+			if !reflect.DeepEqual(c.want, got) {
+				t.Fatalf("Parse(%+v) should return %+v, but returned %+v", c.input, c.want, got)
+			}
+		})
+	}
 }
