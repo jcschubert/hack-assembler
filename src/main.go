@@ -37,6 +37,26 @@ func readLines(fileName string) ([]string, error) {
 	return lines, nil
 }
 
+func writeLines(fileName string, lines []string) error {
+	f, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE, 0755)
+	defer f.Close()
+
+	if err != nil {
+		return err
+	}
+
+	writer := bufio.NewWriter(f)
+	for _, l := range lines {
+		i, err := writer.WriteString(l + "\n")
+		fmt.Printf("%d bytes written", i)
+		if err != nil {
+			return err
+		}
+	}
+	writer.Flush()
+	return nil
+}
+
 func main() {
 	lines, err := readLines("../asm/Add.asm")
 	if err != nil {
@@ -44,5 +64,10 @@ func main() {
 	}
 	for i, l := range lines {
 		fmt.Printf("%6d: %s", i, l)
+	}
+
+	err = writeLines("../asm/AddWritten.asm", lines)
+	if err != nil {
+		panic(err)
 	}
 }
