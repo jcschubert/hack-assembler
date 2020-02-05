@@ -38,7 +38,7 @@ func readLines(fileName string) ([]string, error) {
 }
 
 func main() {
-	lines, err := readLines("main.go")
+	lines, err := readLines("../asm/Add.asm")
 	if err != nil {
 		panic(err)
 	}
