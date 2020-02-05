@@ -13,7 +13,15 @@ type Instruction struct {
 func Parse(lines []string) (instructions []Instruction) {
 	result := []Instruction{}
 	for _, line := range lines {
-		line := strings.Trim(line, "\n")
+		// Handle inline comments, then trim whitespace
+		index := strings.IndexAny(line, "//")
+		if index != -1 {
+			line = line[:index]
+		}
+		// Strip space, tab, newline
+		line := strings.Trim(line, "\n 	")
+
+		// Handle @instructions
 		if strings.HasPrefix(line, "@") {
 			value, err := strconv.Atoi(line[1:])
 			if err != nil {

@@ -21,9 +21,17 @@ func TestParser(t *testing.T) {
 		{
 			"A single @instruction with a value returns an @instruction with an address value.",
 			[]string{"@1234"},
-			[]Instruction{
-				{"@", 1234},
-			},
+			[]Instruction{{"@", 1234}},
+		},
+		{
+			"A line comment does not result in an instruction.",
+			[]string{"// This is a comment."},
+			[]Instruction{},
+		},
+		{
+			"An comment after an instruction is removed.",
+			[]string{"@1234 // This is a comment."},
+			[]Instruction{{"@", 1234}},
 		},
 	}
 
