@@ -2,10 +2,11 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"io"
 	"os"
 	"strings"
+
+	"github.com/jcschubert/hack-assembler/hackparser"
 )
 
 // readLines takes a fileName, splits its lines along '\n' and
@@ -61,15 +62,15 @@ func writeLines(fileName string, lines []string) error {
 }
 
 func main() {
-	lines, err := readLines("../asm/Add.asm")
+	lines, err := readLines("asm/Add.asm")
 	if err != nil {
 		panic(err)
 	}
-	for i, l := range lines {
-		fmt.Printf("%6d: %s", i, l)
-	}
 
-	err = writeLines("../asm/AddWritten.asm", lines)
+	instructions := hackparser.Parse(lines)
+	binary := hackparser.Write(instructions)
+
+	err = writeLines("hack/AddWritten.hack", binary)
 	if err != nil {
 		panic(err)
 	}

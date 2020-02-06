@@ -1,4 +1,4 @@
-package parser
+package hackparser
 
 import (
 	"strconv"
@@ -13,10 +13,16 @@ type IInstruction struct {
 
 func (i IInstruction) parse(code string) Instruction {
 	tokens := strings.Split(code, "=")
-	i.dest = tokens[0]
-	i.comp = tokens[1]
+	if len(tokens) == 2 {
+		i.dest = tokens[0]
+		i.comp = tokens[1]
+	}
 	i.jmp = ""
 	return i
+}
+
+func (i IInstruction) write() string {
+	return ""
 }
 
 type AInstruction struct {
@@ -32,8 +38,13 @@ func (i AInstruction) parse(code string) Instruction {
 	return i
 }
 
+func (i AInstruction) write() string {
+	return ""
+}
+
 type Instruction interface {
 	parse(code string) Instruction
+	write() string
 }
 
 func Parse(lines []string) (instructions []Instruction) {
@@ -45,8 +56,7 @@ func Parse(lines []string) (instructions []Instruction) {
 			line = line[:index]
 		}
 		// Strip space, tab, newline
-		line := strings.Trim(line, "\n 	")
-
+		line := strings.TrimSpace(line)
 		if line == "" {
 			continue
 		}
@@ -60,5 +70,16 @@ func Parse(lines []string) (instructions []Instruction) {
 			result = append(result, instruction.parse(line))
 		}
 	}
+
 	return result
+}
+
+func Write(instructions []Instruction) []string {
+	lines := []string{}
+
+	for _, i := range instructions {
+		lines = append(lines, i.write())
+	}
+
+	return lines
 }

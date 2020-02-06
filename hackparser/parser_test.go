@@ -1,4 +1,4 @@
-package parser
+package hackparser
 
 import (
 	"reflect"
