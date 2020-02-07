@@ -101,7 +101,13 @@ func TestAssemble(t *testing.T) {
 			AInstruction{0},
 			"0000000000000000",
 		},
+		{
+			IInstruction{comp: "A", dest: "D", jmp: ""},
+			"1110110000010000",
+		},
 	}
+
+	// "111accccccdddjjj"
 
 	for _, c := range cases {
 		t.Run(fmt.Sprintf("%+v is assembled to %s", c.instruction, c.written), func(t *testing.T) {
