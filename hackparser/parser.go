@@ -114,35 +114,42 @@ func stripComments(lines []string) (result []string) {
 		if index != -1 {
 			line = line[:index]
 		}
+
+		result = append(result, line)
+	}
+	return result
+}
+
+func stripWhitespace(lines []string) (result []string) {
+	for _, line := range lines {
 		// Strip space, tab, newline
 		line := strings.TrimSpace(line)
 		if line == "" {
 			continue
 		}
-
 		result = append(result, line)
 	}
-
 	return result
 }
 
-func Parse(lines []string) (instructions []Instruction) {
-	result := []Instruction{}
+func Parse(lines []string) []Instruction {
+	instructions := []Instruction{}
+
 	lines = stripComments(lines)
+	lines = stripWhitespace(lines)
 
 	for _, line := range lines {
-		// Handle @instructions
 		if strings.HasPrefix(line, "@") {
 			instruction := AInstruction{}
-			result = append(result, instruction.parse(line))
+			instructions = append(instructions, instruction.parse(line))
 		}
 		if strings.ContainsAny(line, "=;") {
 			instruction := IInstruction{}
-			result = append(result, instruction.parse(line))
+			instructions = append(instructions, instruction.parse(line))
 		}
 	}
 
-	return result
+	return instructions
 }
 
 func Assemble(instruction Instruction) string {
