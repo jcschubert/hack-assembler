@@ -1,6 +1,7 @@
 package hackparser
 
 import (
+	"bytes"
 	"strconv"
 	"strings"
 )
@@ -65,7 +66,8 @@ func Parse(lines []string) (instructions []Instruction) {
 		if strings.HasPrefix(line, "@") {
 			instruction := AInstruction{}
 			result = append(result, instruction.parse(line))
-		} else {
+		}
+		if strings.ContainsAny(line, "=;") {
 			instruction := IInstruction{}
 			result = append(result, instruction.parse(line))
 		}
@@ -82,4 +84,11 @@ func Write(instructions []Instruction) []string {
 	}
 
 	return lines
+}
+
+// toBinary converts an integer into its binary representation, stored as a string
+func toBinary(value int) string {
+	var result bytes.Buffer
+	result.WriteString("0")
+	return result.String()
 }

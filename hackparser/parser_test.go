@@ -1,6 +1,7 @@
 package hackparser
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 )
@@ -54,6 +55,26 @@ func TestParser(t *testing.T) {
 			got := Parse(c.input)
 			if !reflect.DeepEqual(c.want, got) {
 				t.Fatalf("Parse(%+v) should return %+v, but returned %+v", c.input, c.want, got)
+			}
+		})
+	}
+}
+
+type ToBinaryTestCase struct {
+	input int
+	want  string
+}
+
+func TestToBinary(t *testing.T) {
+	cases := []ToBinaryTestCase{
+		{0, "0"},
+	}
+
+	for _, c := range cases {
+		t.Run(fmt.Sprintf("%d is converted to %v", c.input, c.want), func(t *testing.T) {
+			got := toBinary(c.input)
+			if got != c.want {
+				t.Fatalf("ToBinary(%d) should return %q, but returned %q", c.input, c.want, got)
 			}
 		})
 	}
