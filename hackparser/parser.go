@@ -107,8 +107,7 @@ type Instruction interface {
 	write() string
 }
 
-func Parse(lines []string) (instructions []Instruction) {
-	result := []Instruction{}
+func stripComments(lines []string) (result []string) {
 	for _, line := range lines {
 		// Handle inline comments, then trim whitespace
 		index := strings.IndexAny(line, "//")
@@ -121,6 +120,17 @@ func Parse(lines []string) (instructions []Instruction) {
 			continue
 		}
 
+		result = append(result, line)
+	}
+
+	return result
+}
+
+func Parse(lines []string) (instructions []Instruction) {
+	result := []Instruction{}
+	lines = stripComments(lines)
+
+	for _, line := range lines {
 		// Handle @instructions
 		if strings.HasPrefix(line, "@") {
 			instruction := AInstruction{}

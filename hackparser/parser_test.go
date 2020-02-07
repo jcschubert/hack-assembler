@@ -68,7 +68,7 @@ func TestParser(t *testing.T) {
 		t.Run(c.desc, func(t *testing.T) {
 			got := Parse(c.input)
 			if !reflect.DeepEqual(c.want, got) {
-				t.Fatalf("Parse(%+q) should return %+q, but returned %+q", c.input, c.want, got)
+				t.Fatalf("Parse(%+q) should return %+v, but returned %+v", c.input, c.want, got)
 			}
 		})
 	}

@@ -62,7 +62,15 @@ func writeLines(fileName string, lines []string) error {
 }
 
 func main() {
-	lines, err := readLines("asm/Add.asm")
+
+	if len(os.Args) != 2 {
+		panic("Usage: hack-assembler <filename>")
+	}
+	fullPath := os.Args[1]
+
+	path, name := getPathAndName(fullPath)
+
+	lines, err := readLines(fullPath)
 	if err != nil {
 		panic(err)
 	}
@@ -70,8 +78,29 @@ func main() {
 	instructions := hackparser.Parse(lines)
 	binary := hackparser.Write(instructions)
 
-	err = writeLines("hack/AddWritten.hack", binary)
+	err = writeLines(path+name+".hack", binary)
 	if err != nil {
 		panic(err)
 	}
+}
+
+func getPathAndName(path string) (folder string, name string) {
+	parts := make([]string, 0)
+
+	if strings.Contains(path, "/") {
+		parts = strings.Split(path, "/")
+		folder = strings.Join(parts[:len(parts)-1], "/") + "/"
+		name = parts[len(parts)-1]
+	} else {
+		name = path
+	}
+
+	if strings.Contains(name, ".") {
+		parts = strings.Split(name, ".")
+		name = parts[0]
+	} else {
+		name = path
+	}
+
+	return folder, name
 }
