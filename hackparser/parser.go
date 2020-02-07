@@ -2,6 +2,7 @@ package hackparser
 
 import (
 	"bytes"
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -23,7 +24,7 @@ func (i IInstruction) parse(code string) Instruction {
 }
 
 func (i IInstruction) write() string {
-	return ""
+	return "111"
 }
 
 type AInstruction struct {
@@ -40,7 +41,7 @@ func (i AInstruction) parse(code string) Instruction {
 }
 
 func (i AInstruction) write() string {
-	return ""
+	return toBinary(i.value)
 }
 
 type Instruction interface {
@@ -76,6 +77,10 @@ func Parse(lines []string) (instructions []Instruction) {
 	return result
 }
 
+func Assemble(instruction Instruction) string {
+	return instruction.write()
+}
+
 func Write(instructions []Instruction) []string {
 	lines := []string{}
 
@@ -86,14 +91,39 @@ func Write(instructions []Instruction) []string {
 	return lines
 }
 
-// toBinary converts an integer into its binary representation, stored as a string
+// toBinary converts an integer into its binary representation, stored as a string,
+// padded with 0
 func toBinary(value int) string {
+	var digits []int
+	for {
+		if value == 1 {
+			digits = append(digits, 1)
+			break
+		}
+		if value == 0 {
+			digits = append(digits, 0)
+			break
+		}
+
+		remainder := value % 2
+
+		if remainder == 1 {
+			digits = append(digits, 1)
+		} else {
+			digits = append(digits, 0)
+		}
+
+		value = value / 2
+	}
+
 	var result bytes.Buffer
-	if value == 1 {
-		result.WriteString("1")
+
+	for i := len(digits) - 1; i >= 0; i-- {
+		if digits[i] == 1 {
+			result.WriteString("1")
+		} else {
+			result.WriteString("0")
+		}
 	}
-	if value == 0 {
-		result.WriteString("0")
-	}
-	return result.String()
+	return fmt.Sprintf("%016s", result.String())
 }

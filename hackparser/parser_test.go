@@ -67,8 +67,17 @@ type ToBinaryTestCase struct {
 
 func TestToBinary(t *testing.T) {
 	cases := []ToBinaryTestCase{
-		{0, "0"},
-		{1, "1"},
+		{0, "0000000000000000"},
+		{1, "0000000000000001"},
+		{2, "0000000000000010"},
+		{3, "0000000000000011"},
+		{4, "0000000000000100"},
+		{5, "0000000000000101"},
+		{6, "0000000000000110"},
+		{7, "0000000000000111"},
+		{8, "0000000000001000"},
+		{9, "0000000000001001"},
+		{10, "0000000000001010"},
 	}
 
 	for _, c := range cases {
@@ -76,6 +85,29 @@ func TestToBinary(t *testing.T) {
 			got := toBinary(c.input)
 			if got != c.want {
 				t.Fatalf("ToBinary(%d) should return %q, but returned %q", c.input, c.want, got)
+			}
+		})
+	}
+}
+
+type AssembleTestCase struct {
+	instruction Instruction
+	written     string
+}
+
+func TestAssemble(t *testing.T) {
+	cases := []AssembleTestCase{
+		{
+			AInstruction{0},
+			"0000000000000000",
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(fmt.Sprintf("%+v is assembled to %s", c.instruction, c.written), func(t *testing.T) {
+			got := Assemble(c.instruction)
+			if got != c.written {
+				t.Fatalf("ToBinary(%+v) should return %q, but returned %q", c.instruction, c.written, got)
 			}
 		})
 	}
