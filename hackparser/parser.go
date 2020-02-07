@@ -14,12 +14,20 @@ type IInstruction struct {
 }
 
 func (i IInstruction) parse(code string) Instruction {
-	tokens := strings.Split(code, "=")
-	if len(tokens) == 2 {
+	if strings.Contains(code, "=") {
+		tokens := strings.Split(code, "=")
 		i.dest = tokens[0]
-		i.comp = tokens[1]
+		code = tokens[1]
 	}
-	i.jmp = ""
+
+	if strings.Contains(code, ";") {
+		tokens := strings.Split(code, ";")
+		i.comp = tokens[0]
+		i.jmp = tokens[1]
+	} else {
+		i.comp = code
+	}
+
 	return i
 }
 

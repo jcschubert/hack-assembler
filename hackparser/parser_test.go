@@ -48,13 +48,27 @@ func TestParser(t *testing.T) {
 				IInstruction{dest: "M", comp: "D+A", jmp: ""},
 			},
 		},
+		{
+			"M=D+A;JNE is correctly parsed as an I-Instruction",
+			[]string{"M=D+A;JNE"},
+			[]Instruction{
+				IInstruction{dest: "M", comp: "D+A", jmp: "JNE"},
+			},
+		},
+		{
+			"0;JMP is correctly parsed as an I-Instruction",
+			[]string{"0;JMP"},
+			[]Instruction{
+				IInstruction{dest: "", comp: "0", jmp: "JMP"},
+			},
+		},
 	}
 
 	for _, c := range cases {
 		t.Run(c.desc, func(t *testing.T) {
 			got := Parse(c.input)
 			if !reflect.DeepEqual(c.want, got) {
-				t.Fatalf("Parse(%+v) should return %+v, but returned %+v", c.input, c.want, got)
+				t.Fatalf("Parse(%+q) should return %+q, but returned %+q", c.input, c.want, got)
 			}
 		})
 	}
