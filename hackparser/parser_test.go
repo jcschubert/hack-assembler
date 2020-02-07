@@ -68,6 +68,7 @@ type ToBinaryTestCase struct {
 func TestToBinary(t *testing.T) {
 	cases := []ToBinaryTestCase{
 		{0, "0"},
+		{1, "1"},
 	}
 
 	for _, c := range cases {

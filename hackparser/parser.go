@@ -89,6 +89,11 @@ func Write(instructions []Instruction) []string {
 // toBinary converts an integer into its binary representation, stored as a string
 func toBinary(value int) string {
 	var result bytes.Buffer
-	result.WriteString("0")
+	if value == 1 {
+		result.WriteString("1")
+	}
+	if value == 0 {
+		result.WriteString("0")
+	}
 	return result.String()
 }
