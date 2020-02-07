@@ -132,3 +132,53 @@ func TestAssemble(t *testing.T) {
 		})
 	}
 }
+
+type SymbolsTestCase struct {
+	lines   []string
+	symbols map[string]int
+}
+
+func TestReadSymbols(t *testing.T) {
+	cases := []SymbolsTestCase{
+		{
+			[]string{
+				"@123",
+				"M=M+1",
+			},
+			map[string]int{},
+		},
+		{
+			[]string{
+				"(LOOP)",
+				"D=A",
+			},
+			map[string]int{
+				"LOOP": 1,
+			},
+		},
+		{
+			[]string{
+				"(LOOP)",
+				"D=A",
+				"@LOOP",
+				"0;JMP",
+				"(MAIN)",
+				"A=D+1",
+			},
+			map[string]int{
+				"LOOP": 1,
+				"MAIN": 4,
+			},
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(fmt.Sprintf("%+v results in %+v", c.lines, c.symbols), func(t *testing.T) {
+			got := readSymbols(c.lines, map[string]int{})
+			if !reflect.DeepEqual(got, c.symbols) {
+				t.Fatalf("readSymbols(%+v, {}) should return %+v, but returned %+v",
+					c.lines, c.symbols, got)
+			}
+		})
+	}
+}

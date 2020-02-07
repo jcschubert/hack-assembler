@@ -132,11 +132,33 @@ func stripWhitespace(lines []string) (result []string) {
 	return result
 }
 
+var symbols = map[string]int{}
+
+// only feed this with lines without comments or whitespace. only instructions!
+func readSymbols(lines []string, symbols map[string]int) map[string]int {
+	i := 0
+	for _, line := range lines {
+		// check if we have a label
+		if strings.HasPrefix(line, "(") && strings.HasSuffix(line, ")") {
+			// label of (LOOP) = LOOP
+			label := line[1 : len(line)-1]
+			// point to next instruction
+			symbols[label] = i + 1
+		} else {
+			// inc instruction counter
+			i++
+		}
+	}
+
+	return symbols
+}
+
 func Parse(lines []string) []Instruction {
 	instructions := []Instruction{}
 
 	lines = stripComments(lines)
 	lines = stripWhitespace(lines)
+	readSymbols(lines, symbols)
 
 	for _, line := range lines {
 		if strings.HasPrefix(line, "@") {
